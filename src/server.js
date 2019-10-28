@@ -1,46 +1,27 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const schedule = require('node-schedule');
-const config = require('./cfg/config.json');
+// const schedule = require('node-schedule');
 const scraper = require('./scraper');
 const logger = require('./logger');
+const { db, Timestamp } = require('./firebase');
 
-const agendamentos = {};
-
-const server = express();
-
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: false }));
-
-server.get(config.urlGetDatasAgendamento, async (req, res) => {
-  try {
-    return res.status(200).json(agendamentos);
-  } catch (e) {
-    logger.error(e);
-    return res.status(400).send({ error: e.message });
-  }
-});
-
-server.listen(config.port, () => {
-  logger.info('SEF-Monitor ouvindo a porta ' + config.port);
-});
-
-const update = ag => ({ servico, posto, datas }) => {
-  if (!ag[servico]) ag[servico] = {};
-  if (!ag[servico][posto]) ag[servico][posto] = {};
-  logger.info(`${servico} - ${posto} - Obtidos ${Object.keys(datas).length} horarios.`);
-  ag[servico][posto] = {
-    timestamp: Date.now(),
-    datas,
-  };
+const updateFirebase = async ({ servico, posto, datas }) => {
+  db.collection('agendamentos')
+    .doc(servico)
+    .collection('locais')
+    .doc(posto)
+    .set(
+      {
+        timestamp: Timestamp.fromMillis(Date.now()),
+        datas,
+      },
+      { merge: true },
+    );
 };
 
 const startScraper = async () => {
   logger.info('Iniciando raspagem...');
-  const updateFn = update(agendamentos);
-  await scraper(updateFn);
+  await scraper(updateFirebase);
   logger.info('Raspagem finalizada.');
 };
 
-// startScraper(); // Para rodar imediatamente
-schedule.scheduleJob('*/10 * * * *', startScraper);
+startScraper(); // Para rodar imediatamente
+// schedule.scheduleJob('*/10 * * * *', startScraper);

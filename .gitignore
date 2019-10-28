@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+
+# Credentials for firebase
+sef-monitor-firebase.json
