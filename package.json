@@ -4,7 +4,8 @@
   "description": "Monitor do Portal sef.pt",
   "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
   },
   "keywords": [
     "sef",
@@ -22,7 +23,8 @@
     "puppeteer-extra-plugin-recaptcha": "^3.0.4",
     "puppeteer-extra-plugin-stealth": "^2.2.2",
     "s": "^0.1.1",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.2.1"
   },
   "devDependencies": {
     "eslint": "^6.6.0",

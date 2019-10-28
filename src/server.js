@@ -3,26 +3,9 @@ const bodyParser = require('body-parser');
 const schedule = require('node-schedule');
 const config = require('./cfg/config.json');
 const scraper = require('./scraper');
+const logger = require('./logger');
 
 var agendamentos = new Object();
-
-//Logger = gerenciador de log para armazenar em arquivo log em disco
-const winston = require('winston');
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.Console({
-      colorize: true,
-    }),
-    new winston.transports.File({ filename: __dirname + '/cfg/log.json' }),
-  ],
-});
 
 var server = express();
 
