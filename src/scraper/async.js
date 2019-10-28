@@ -6,9 +6,9 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const UserAgentPlugin = require('puppeteer-extra-plugin-anonymize-ua');
 //Plugin puppeteer para resolver captcha
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
-const logger = require('./logger');
+const logger = require('../logger');
 
-const config = require('./cfg/config.json');
+const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
 // add recaptch plugin
 puppeteer.use(recaptchaPlugin);
@@ -17,7 +17,7 @@ puppeteer.use(StealthPlugin());
 // add plugin para anonimato do User-Agent e signal Windows como platforma
 puppeteer.use(UserAgentPlugin({ makeWindows: true }));
 
-async function scraping() {
+async function scraping(callback) {
   try {
     const browser = await puppeteer.launch(config.puppeteerLaunchOptions);
     const page = await browser.newPage();
@@ -36,7 +36,6 @@ async function scraping() {
         });
     });
     console.log(servicos);
-    var datasAgendamento = [];
     for (var servico of servicos) {
       if (servico[0] !== '') {
         await Promise.all([page.waitForNavigation(), page.select(config.comboBoxServicos, servico[0])]);
@@ -49,10 +48,11 @@ async function scraping() {
         });
         for (var lugar of lugares) {
           await Promise.all([page.waitForNavigation(), page.select(config.comboBoxLugares, lugar[0])]);
-          var dataAgendamento = new Object();
-          dataAgendamento.postoAtendimento = lugar[1];
-          dataAgendamento.servico = servico[1];
-          dataAgendamento.datas = [];
+          const agendamento = {
+            servico: servico[1],
+            posto: lugar[1],
+            datas: {},
+          };
           if (!(await page.$(config.msgNotFound))) {
             for (var qtdMes = 0; qtdMes < 6; qtdMes++) {
               const ths = await page.$$eval(config.ths, ths =>
@@ -61,9 +61,9 @@ async function scraping() {
               const tds = await page.$$eval(config.tds, tds => tds.map(td => td.innerText.trim()));
               for (var i = 0; i < ths.length; i++) {
                 if (!ths[i][1].includes('fc-other-month')) {
-                  dataAgendamento.datas.push([ths[i][0], tds[i]]);
+                  if (tds[i]) agendamento.datas[ths[i][0]] = tds[i];
                   if (tds[i].includes(':')) {
-                    console.log(dataAgendamento.postoAtendimento + ' ' + ths[i][0] + ', ' + tds[i]);
+                    console.log(agendamento.posto + ' ' + ths[i][0] + ', ' + tds[i]);
                   }
                 }
               }
@@ -71,16 +71,15 @@ async function scraping() {
               await page.waitFor(1000);
             }
           }
-          datasAgendamento.push(dataAgendamento);
+          callback(agendamento);
         }
       }
     }
     await page.close();
     await browser.close();
-    return { datasAgendamento, timestamp: new Date() };
   } catch (e) {
     logger.error(e.message);
   }
 }
 
-module.exports.scraping = scraping;
+module.exports = scraping;
