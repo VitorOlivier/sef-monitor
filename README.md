@@ -6,9 +6,15 @@
 
 ### Installation
 
-### `git clone https://github.com/VitorOlivier/sef-monitor
+```bash
+git clone https://github.com/VitorOlivier/sef-monitor
+# or click in clone or download button
+```
 
 ### Usage
 In the project directory, you can run:
 
-### `npm start`
+```bash
+npm start
+```
+
