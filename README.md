@@ -4,6 +4,11 @@
 
 ## Getting Started
 
+### Installation
+
+### `git clone https://github.com/VitorOlivier/sef-monitor
+
+### Usage
 In the project directory, you can run:
 
 ### `npm start`
