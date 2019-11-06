@@ -14,28 +14,10 @@
   "userTextBox": "#ucLogin_pnlLogin #txtUsername",
   "passTextBox": "#ucLogin_pnlLogin #txtPassword",
   "loginBtn": "#btn_Login",
-  "userSEF": "",
-  "passSEF": "",
   "comboBoxServicos": "#Services_List",
   "comboBoxLugares": "#Places_List",
   "msgNotFound": "#ctl00_ctl53_g_948e31d8_a34a_4c4d_aa9f_c457786c05b7_ctl00_lblVagasResult",
   "ths": ".fc-content-skeleton .fc-day-top",
   "tds": ".fc-content-skeleton tbody tr:not(.fc-limited) td:not(.fc-limited):not(.fc-more-cell)",
-  "buttonNext": ".fc-icon.fc-icon-right-single-arrow",
-  "nodeMailerSetup": {
-    "transporte": {
-      "host": "",
-      "port": 465,
-      "proxy": "",
-      "auth": {
-        "user": "",
-        "pass": ""
-      },
-      "messageHeader": {
-        "from": "no-reply@sefmonitor.com",
-        "to": "",
-        "subject": "Notificação SEFMonitor"
-      }
-    }
-  }
+  "buttonNext": ".fc-icon.fc-icon-right-single-arrow"
 }

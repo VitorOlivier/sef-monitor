@@ -7,7 +7,7 @@ const UserAgentPlugin = require('puppeteer-extra-plugin-anonymize-ua');
 //Plugin puppeteer para resolver captcha
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const logger = require('../logger');
-
+const credentials = require('../cfg/sef-credentials.json');
 const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
 // add recaptch plugin
@@ -23,8 +23,8 @@ async function scraping() {
     const page = await browser.newPage();
     await page.goto(config.urlAgendamento, { waitUntil: 'networkidle2' });
     if (page.url().includes(config.urlLogin)) {
-      await page.type(config.userTextBox, config.userSEF, config.typeOptions);
-      await page.type(config.passTextBox, config.passSEF, config.typeOptions);
+      await page.type(config.userTextBox, credentials.userSEF, config.typeOptions);
+      await page.type(config.passTextBox, credentials.passSEF, config.typeOptions);
       await Promise.all([page.waitForNavigation(), page.click(config.loginBtn)]);
       await page.goto(config.urlAgendamento, { waitUntil: 'networkidle2' });
     }
