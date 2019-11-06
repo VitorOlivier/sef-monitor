@@ -1,4 +1,4 @@
-// const schedule = require('node-schedule');
+const schedule = require('node-schedule');
 const scraper = require('./scraper');
 const logger = require('./logger');
 const { db, Timestamp } = require('./firebase');
@@ -24,4 +24,4 @@ const startScraper = async () => {
 };
 
 startScraper(); // Para rodar imediatamente
-// schedule.scheduleJob('*/10 * * * *', startScraper);
+schedule.scheduleJob('*/10 * * * *', startScraper);
