@@ -62,3 +62,6 @@ typings/
 
 # Credentials for firebase
 sef-monitor-firebase.json
+
+# Credentials for SEF
+sef-credentials.json
