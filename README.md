@@ -8,7 +8,6 @@
 
 ```bash
 git clone https://github.com/VitorOlivier/sef-monitor
-# or click in clone or download button
 npm i
 ```
 
