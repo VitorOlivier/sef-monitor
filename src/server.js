@@ -15,5 +15,5 @@ const startScraper = async () => {
   logger.info('Raspagem finalizada.');
 };
 
-//startScraper(); // Para rodar imediatamente
+startScraper(); // Para rodar imediatamente
 schedule.scheduleJob('*/15 * * * *', startScraper);

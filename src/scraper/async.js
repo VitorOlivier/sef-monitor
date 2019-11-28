@@ -7,6 +7,7 @@ const credentials = require('../cfg/sef-credentials.json');
 const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
 const { db } = require('../firebase');
+const moment = require('moment');
 
 puppeteer.use(recaptchaPlugin);
 puppeteer.use(StealthPlugin());
@@ -67,9 +68,11 @@ async function scraping(callback) {
                 if (!ths[i][1].includes('fc-other-month')) {
                   if (tds[i].includes(':')) {
                     console.log(servico[1] + ' ' + lugar[1] + ' ' + ths[i][0] + ', ' + tds[i]);
+                    const dtHora = moment.utc(ths[i][0] + ' ' + tds[i], 'YYYY-MM-DD HH:mm').toDate();
                     const agendamento = {
-                      datahora: ths[i][0],
+                      data: ths[i][0],
                       hora: tds[i],
+                      datahora: dtHora,
                       local: lugar[1],
                       servico: servico[1],
                     };
