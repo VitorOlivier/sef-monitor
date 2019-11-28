@@ -3,25 +3,17 @@ const scraper = require('./scraper');
 const logger = require('./logger');
 const { db, Timestamp } = require('./firebase');
 
-const updateFirebase = async ({ servico, posto, datas }) => {
-  db.collection('agendamentos')
-    .doc(servico)
-    .collection('locais')
-    .doc(posto)
-    .set(
-      {
-        timestamp: Timestamp.fromMillis(Date.now()),
-        datas,
-      },
-      { merge: true },
-    );
-};
-
 const startScraper = async () => {
   logger.info('Iniciando raspagem...');
-  await scraper(updateFirebase);
+  await scraper(async agendamento => {
+    db.collection('sef').add({
+      timestamp: Timestamp.fromMillis(Date.now()),
+      ...agendamento,
+    });
+  });
+
   logger.info('Raspagem finalizada.');
 };
 
-startScraper(); // Para rodar imediatamente
-schedule.scheduleJob('*/10 * * * *', startScraper);
+//startScraper(); // Para rodar imediatamente
+schedule.scheduleJob('*/15 * * * *', startScraper);

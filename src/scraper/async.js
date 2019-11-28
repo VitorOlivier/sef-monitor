@@ -1,21 +1,30 @@
-//Biblioteca para controlar Chrome
 const puppeteer = require('puppeteer-extra');
-//Plugin pupperteer para navegação stealth
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-//Plugin pupperteer para navegação anonima
 const UserAgentPlugin = require('puppeteer-extra-plugin-anonymize-ua');
-//Plugin puppeteer para resolver captcha
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const logger = require('../logger');
 const credentials = require('../cfg/sef-credentials.json');
 const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
-// add recaptch plugin
+const { db } = require('../firebase');
+
 puppeteer.use(recaptchaPlugin);
-// add stealth plugin e usa defaults config (all tricks to hide puppeteer usage)
 puppeteer.use(StealthPlugin());
-// add plugin para anonimato do User-Agent e signal Windows como platforma
 puppeteer.use(UserAgentPlugin({ makeWindows: true }));
+
+async function deleteDataBase(local, servico) {
+  const batch = db.batch();
+  db.collection('sef')
+    .where('local', '==', local)
+    .where('servico', '==', servico)
+    .get()
+    .then(snapshot => {
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      return batch.commit();
+    });
+}
 
 async function scraping(callback) {
   try {
@@ -32,10 +41,9 @@ async function scraping(callback) {
       return opts
         .filter(opt => opt.getAttribute('value') !== '')
         .map(opt => {
-          return [opt.getAttribute('value'), opt.innerText.trim()];
+          return [opt.getAttribute('value'), opt.innerText.replace('  ', ' ').trim()];
         });
     });
-    console.log(servicos);
     for (var servico of servicos) {
       if (servico[0] !== '') {
         await Promise.all([page.waitForNavigation(), page.select(config.comboBoxServicos, servico[0])]);
@@ -43,16 +51,12 @@ async function scraping(callback) {
           return opts
             .filter(opt => opt.getAttribute('value') !== '')
             .map(opt => {
-              return [opt.getAttribute('value'), opt.innerText.trim()];
+              return [opt.getAttribute('value'), opt.innerText.replace('  ', ' ').trim()];
             });
         });
         for (var lugar of lugares) {
+          deleteDataBase(lugar[1], servico[1]);
           await Promise.all([page.waitForNavigation(), page.select(config.comboBoxLugares, lugar[0])]);
-          const agendamento = {
-            servico: servico[1],
-            posto: lugar[1],
-            datas: {},
-          };
           if (!(await page.$(config.msgNotFound))) {
             for (var qtdMes = 0; qtdMes < 6; qtdMes++) {
               const ths = await page.$$eval(config.ths, ths =>
@@ -61,9 +65,15 @@ async function scraping(callback) {
               const tds = await page.$$eval(config.tds, tds => tds.map(td => td.innerText.trim()));
               for (var i = 0; i < ths.length; i++) {
                 if (!ths[i][1].includes('fc-other-month')) {
-                  if (tds[i]) agendamento.datas[ths[i][0]] = tds[i];
                   if (tds[i].includes(':')) {
-                    console.log(agendamento.posto + ' ' + ths[i][0] + ', ' + tds[i]);
+                    console.log(servico[1] + ' ' + lugar[1] + ' ' + ths[i][0] + ', ' + tds[i]);
+                    const agendamento = {
+                      datahora: ths[i][0],
+                      hora: tds[i],
+                      local: lugar[1],
+                      servico: servico[1],
+                    };
+                    callback(agendamento);
                   }
                 }
               }
@@ -71,7 +81,6 @@ async function scraping(callback) {
               await page.waitFor(1000);
             }
           }
-          callback(agendamento);
         }
       }
     }
