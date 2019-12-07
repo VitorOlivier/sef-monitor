@@ -6,7 +6,6 @@ const logger = require('../logger');
 const credentials = require('../cfg/sef-credentials.json');
 const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
-const { db } = require('../firebase');
 const moment = require('moment');
 
 puppeteer.use(recaptchaPlugin);
@@ -14,17 +13,7 @@ puppeteer.use(StealthPlugin());
 puppeteer.use(UserAgentPlugin({ makeWindows: true }));
 
 async function deleteDataBase(local, servico) {
-  const batch = db.batch();
-  db.collection('sef')
-    .where('local', '==', local)
-    .where('servico', '==', servico)
-    .get()
-    .then(snapshot => {
-      snapshot.docs.forEach(doc => {
-        batch.delete(doc.ref);
-      });
-      return batch.commit();
-    });
+  require('../controller/agendamento').deleteMany({ local, servico });
 }
 
 async function scraping(callback) {
