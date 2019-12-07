@@ -65,3 +65,6 @@ sef-monitor-firebase.json
 
 # Credentials for SEF
 sef-credentials.json
+
+# Credentials for mongoose
+sef-monitor-mongoose.json
