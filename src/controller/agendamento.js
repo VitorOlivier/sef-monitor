@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const agendamentos = await Agendamento.find(req.body);
+    const agendamentos = await Agendamento.find(req.body.filter).sort(req.body.sort);
     return res.send({ agendamentos });
   } catch (err) {
     return res.status(400).send({ err });

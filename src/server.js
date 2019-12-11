@@ -1,10 +1,13 @@
+
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const schedule = require('node-schedule');
 const scraper = require('./scraper');
 const logger = require('./logger');
 const config = require('./cfg/config.json');
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
