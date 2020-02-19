@@ -59,7 +59,7 @@ async function scraping(callback) {
               for (var i = 0; i < ths.length; i++) {
                 if (!ths[i][1].includes('fc-other-month')) {
                   if (tds[i].includes(':')) {
-                    console.log(servico[1] + ' ' + lugar[1] + ' ' + ths[i][0] + ', ' + tds[i]);
+                    //console.log(servico[1] + ' ' + lugar[1] + ' ' + ths[i][0] + ', ' + tds[i]);
                     const dtHora = moment.utc(ths[i][0] + ' ' + tds[i], 'YYYY-MM-DD HH:mm').toDate();
                     const agendamento = {
                       data: ths[i][0],
