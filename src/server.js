@@ -21,7 +21,6 @@ const startScraper = async () => {
   await scraper(async agendamento => {
     require('./controller/agendamento').create(agendamento);
   });
-
   logger.info('Raspagem finalizada.');
 };
 
