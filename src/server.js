@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 require('./controller/agendamento').routers(app);
 
 app.listen(process.env.PORT || config.port, () => {
-  logger.info('SEF-Monitor ouvindo a porta ' + process.env.PORT || config.port);
+  logger.info('SEF-Monitor ouvindo a porta ' + (process.env.PORT || config.port));
 });
 
 const startScraper = async () => {
