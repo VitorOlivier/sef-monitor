@@ -23,8 +23,8 @@ async function scraping(callback) {
     const page = await browser.newPage();
     await page.goto(config.urlAgendamento, { waitUntil: 'networkidle2' });
     if (page.url().includes(config.urlLogin)) {
-      if (userSEF) throw { message: 'Check de variable USER_SEF.' };
-      if (passSEF) throw { message: 'Check de variable PWD_SEF.' };
+      if (!userSEF) throw { message: 'Check de variable USER_SEF.' };
+      if (!passSEF) throw { message: 'Check de variable PWD_SEF.' };
       await page.type(config.userTextBox, userSEF, config.typeOptions);
       await page.type(config.passTextBox, passSEF, config.typeOptions);
       await Promise.all([page.waitForNavigation(), page.click(config.loginBtn)]);
