@@ -3,7 +3,8 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const UserAgentPlugin = require('puppeteer-extra-plugin-anonymize-ua');
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const logger = require('../logger');
-const credentials = require('../cfg/sef-credentials.json');
+const userSEF = process.env.USER_SEF;
+const passSEF = process.env.PWD_SEF;
 const config = require('../cfg/config.json');
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
 const moment = require('moment');
@@ -22,8 +23,10 @@ async function scraping(callback) {
     const page = await browser.newPage();
     await page.goto(config.urlAgendamento, { waitUntil: 'networkidle2' });
     if (page.url().includes(config.urlLogin)) {
-      await page.type(config.userTextBox, credentials.userSEF, config.typeOptions);
-      await page.type(config.passTextBox, credentials.passSEF, config.typeOptions);
+      if (userSEF) throw { message: 'Check de variable USER_SEF.' };
+      if (passSEF) throw { message: 'Check de variable PWD_SEF.' };
+      await page.type(config.userTextBox, userSEF, config.typeOptions);
+      await page.type(config.passTextBox, passSEF, config.typeOptions);
       await Promise.all([page.waitForNavigation(), page.click(config.loginBtn)]);
       await page.goto(config.urlAgendamento, { waitUntil: 'networkidle2' });
     }

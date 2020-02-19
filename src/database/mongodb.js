@@ -1,8 +1,8 @@
 const path = require('path');
 const mongoose = require('mongoose');
+const options = { useUnifiedTopology: true, useNewUrlParser: true };
+const uris = process.env.MONGO_URL || 'mongodb://localhost/sef-monitor');
 
-const serviceAccount = require(path.resolve(__dirname, '../cfg/sef-monitor-mongoose.json'));
-
-mongoose.connect(serviceAccount.uris, serviceAccount.options);
+mongoose.connect(uris, options);
 
 module.exports = mongoose;
