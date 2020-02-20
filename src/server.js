@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -5,7 +7,7 @@ const schedule = require('node-schedule');
 const scraper = require('./scraper');
 const logger = require('./logger');
 const config = require('./cfg/config.json');
-const appURL = (process.env.APP_URL, 'https://sef-monitor-web.herokuapp.com/');
+const appURL = process.env.APP_URL;
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -29,5 +31,5 @@ const startScraper = async () => {
   logger.info('Raspagem finalizada.');
 };
 
-//startScraper(); // Para rodar imediatamente
-schedule.scheduleJob('*/15 * * * *', startScraper);
+startScraper(); // Para rodar imediatamente
+//schedule.scheduleJob('*/15 * * * *', startScraper);

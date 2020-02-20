@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const UserAgentPlugin = require('puppeteer-extra-plugin-anonymize-ua');
@@ -5,7 +7,8 @@ const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const logger = require('../logger');
 const userSEF = process.env.USER_SEF;
 const passSEF = process.env.PWD_SEF;
-const config = require('../cfg/config.json');
+let config = JSON.parse(fs.readFileSync(path.join(__dirname, '../cfg/config.json'))); 
+config.puppeteerLaunchOptions.proxy = process.env.HTTP_PROXY;
 const recaptchaPlugin = RecaptchaPlugin(config.recaptchaOptions);
 const moment = require('moment');
 

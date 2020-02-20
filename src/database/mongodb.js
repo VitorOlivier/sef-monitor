@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const options = { useUnifiedTopology: true, useNewUrlParser: true };
-const uris = process.env.MONGO_URL || 'mongodb://localhost/sef-monitor';
+const uris = process.env.MONGO_URL;
 
 mongoose.connect(uris, options);
 

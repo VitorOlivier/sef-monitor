@@ -8,7 +8,16 @@
 
 ```bash
 git clone https://github.com/VitorOlivier/sef-monitor
+cd sef-monitor
 npm i
+```
+
+### Create file .env to set environment variable
+```bash
+APP_URL=<URL_TO_FRONTEND>
+MONGO_URL=mongodb+srv://<user>:<pwd>@<mongodb_uri>/sef-monitor?retryWrites=true&w=majority
+PWD_SEF=<PASSWORD_TO_ACESS_SEF_PORTAL>
+USER_SEF=<USER_NAME_TO_ACESS_SEF_PORTAL>
 ```
 
 ### Usage

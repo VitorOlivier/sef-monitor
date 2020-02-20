@@ -2,9 +2,8 @@
   "urlGetDatasAgendamento": "/getDatasAgendamento",
   "port": 8080,
   "puppeteerLaunchOptions": {
-    "headless": true,
+    "headless": false,
     "defaultViewport": null,
-    "proxy": "http://fw1.bes.gbes:8080",
     "args": ["--no-sandbox","--start-maximized"]
   },
   "recaptchaOptions": { "provider": { "id": "2captcha", "token": "" } },
